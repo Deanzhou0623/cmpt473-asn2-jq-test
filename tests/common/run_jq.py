@@ -30,3 +30,30 @@ def run_jq(
         return 124, stdout, stderr
     except FileNotFoundError:
         return 127, "", "jq executable not found"
+
+
+def run_jq_bytes(
+    args: list[str], input_bytes: bytes | None = None, timeout: int = 5
+) -> tuple[int, bytes, bytes]:
+    """Run jq with args and optional stdin bytes.
+
+    Returns: (returncode, stdout_bytes, stderr_bytes)
+    """
+    cmd = ["jq", *args]
+    try:
+        completed = subprocess.run(
+            cmd,
+            input=input_bytes,
+            text=False,
+            capture_output=True,
+            timeout=timeout,
+            check=False,
+        )
+        return completed.returncode, completed.stdout, completed.stderr
+    except subprocess.TimeoutExpired as exc:
+        stdout = exc.stdout if isinstance(exc.stdout, bytes) else b""
+        stderr = exc.stderr if isinstance(exc.stderr, bytes) else b""
+        suffix = f"\njq timed out after {timeout}s".encode("utf-8")
+        return 124, stdout, stderr + suffix
+    except FileNotFoundError:
+        return 127, b"", b"jq executable not found"
