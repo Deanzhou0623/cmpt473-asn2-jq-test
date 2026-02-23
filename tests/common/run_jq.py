@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import subprocess
-from typing import Optional
 
 
 def run_jq(
-    args: list[str], input_text: Optional[str] = None, timeout: int = 5
+    args: list[str], input_text: str | None = None, timeout: int = 5
 ) -> tuple[int, str, str]:
     """Run jq with args and optional stdin text.
 
@@ -29,3 +28,5 @@ def run_jq(
         stderr = exc.stderr if isinstance(exc.stderr, str) else ""
         stderr = (stderr + "\n" if stderr else "") + f"jq timed out after {timeout}s"
         return 124, stdout, stderr
+    except FileNotFoundError:
+        return 127, "", "jq executable not found"
