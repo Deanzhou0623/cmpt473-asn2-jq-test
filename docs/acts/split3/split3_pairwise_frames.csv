@@ -1,0 +1,12 @@
+frame_id,input_file_state,filter_kind,exit_status_flag,expect_rc,expect_stdout,expect_stderr_pattern,pytest_test,result
+F01,invalid_json,dot,off,nonzero,empty,parse,test_invalid_json_file_returns_parse_error_and_no_stdout,pass
+F02,empty,dot,off,zero_or_nonzero,empty,parse_or_empty,test_empty_json_file_returns_parse_error_and_no_stdout,pass
+F03,valid,invalid_program,off,3,empty,compile|syntax,test_invalid_filter_returns_compile_or_syntax_error_and_no_stdout,pass
+F04,missing,dot,off,2,empty,could not open|no such file,test_missing_file_returns_open_error_and_no_stdout,pass
+F05,no_read_permission,dot,off,2,empty,permission|denied|could not open,test_permission_denied_returns_error,pass
+F06,valid,field_a,on,0,nonempty,empty,test_exit_status_truthy_output_returns_zero_nonempty_stdout_empty_stderr,pass
+F07,valid,field_missing,on,1,empty_or_null,empty,test_exit_status_missing_returns_one_and_quiet_stderr,pass
+F08,valid,field_c,on,1,nonempty,empty,test_exit_status_false_returns_one,pass
+F09,valid,field_b,on,1,nonempty,empty,test_exit_status_null_returns_one,pass
+F10,valid,empty_filter,on,4,empty,empty,test_exit_status_no_output_empty_filter_returns_four,pass
+F11,valid,invalid_program,on,3,empty,compile|syntax,test_exit_status_invalid_filter_returns_three_and_compile_error,pass
