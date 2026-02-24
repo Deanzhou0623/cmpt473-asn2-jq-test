@@ -24,7 +24,8 @@ from common.run_jq import run_jq
 
 THIS_DIR = Path(__file__).resolve().parent
 FIXTURES_DIR = THIS_DIR / "fixtures"
-FRAMES_CSV = THIS_DIR.parents[2] / "docs" / "acts" / "split1" / "split1_pairwise_frames.csv"
+# THIS_DIR is tests/split1, so repo root is parents[1].
+FRAMES_CSV = THIS_DIR.parents[1] / "docs" / "acts" / "split1" / "split1_pairwise_frames.csv"
 
 
 def fixture_path(name: str) -> str:
