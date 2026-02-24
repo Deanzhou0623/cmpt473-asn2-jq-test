@@ -306,6 +306,9 @@ No confirmed jq defects were found across all four splits. All tested behaviors 
 - `map` on an array of objects with missing keys correctly produces `null` for absent fields.
 - All seven tested builtins behave robustly across numeric, object, mixed, empty, and edge-case inputs.
 
+### T-way Coverage
+ACTS verification confirmed complete 2‑way (pairwise) coverage for our modeled parameter space and constraints. The verify check reported no missing pairs, all generated frames were implemented and executed, and therefore the test achieved pairwise coverage for the modeled inputs.
+
 ### ACTS decision
 
 We selected ACTS for combinatorial testing to avoid spending time implementing and maintaining a custom generator. ACTS is a mature, documented tool that produces pairwise frames from parameter and constraint files. Encoding our model as text files made the process reproducible and allowed us to focus on modelling the input space and oracles rather than focusing on generation logic. ACTS output CSV frames that we map to fixtures and tests, which simplified automation and made reruns or model extensions straightforward.
