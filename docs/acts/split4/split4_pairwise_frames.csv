@@ -1,41 +1,45 @@
-# ACTS Test Suite Generation: Mon Feb 23 21:48:38 PST 2026
+# ACTS Test Suite Generation: Mon Feb 23 22:02:01 PST 2026
 #  '*' represents don't care value 
 # Degree of interaction coverage: 2
 # Number of parameters: 3
-# Maximum number of values per parameter: 7
-# Number of configurations: 34
-filter,input_type,input_state
-select,num_array,unsorted
-select,obj_array,duplicates
-select,mixed_array,normal
-select,empty_array,normal
-map,num_array,duplicates
-map,obj_array,missing_keys
-map,mixed_array,unsorted
-map,empty_array,normal
-sort,num_array,normal
-sort,obj_array,unsorted
-sort,mixed_array,duplicates
-sort,empty_array,normal
-group_by,num_array,unsorted
-group_by,obj_array,normal
-group_by,mixed_array,duplicates
-group_by,empty_array,normal
-unique,num_array,unsorted
-unique,obj_array,missing_keys
-unique,mixed_array,duplicates
-unique,empty_array,normal
-add,num_array,unsorted
-add,obj_array,missing_keys
-add,mixed_array,duplicates
-add,empty_array,normal
-length,num_array,unsorted
-length,obj_array,missing_keys
-length,mixed_array,duplicates
-length,empty_array,normal
-length,string,normal
-length,object,normal
-length,null,normal
-select,obj_array,missing_keys
-sort,obj_array,missing_keys
-group_by,obj_array,missing_keys
+# Maximum number of values per parameter: 8
+# Number of configurations: 38
+filter_type,input_data_type,data_property
+select,array_numeric,unsorted
+map,array_numeric,has_duplicates
+sort,array_numeric,sorted
+group_by,array_numeric,unsorted
+unique,array_numeric,has_duplicates
+add,array_numeric,sorted
+length,array_numeric,unsorted
+select,array_object,missing_keys
+map,array_object,sorted
+sort,array_object,has_duplicates
+group_by,array_object,sorted
+unique,array_object,unsorted
+add,array_object,missing_keys
+length,array_object,missing_keys
+select,array_mixed,has_duplicates
+map,array_mixed,unsorted
+sort,array_mixed,sorted
+group_by,array_mixed,has_duplicates
+unique,array_mixed,sorted
+add,array_mixed,unsorted
+length,array_mixed,has_duplicates
+select,array_empty,sorted
+map,array_empty,sorted
+sort,array_empty,sorted
+group_by,array_empty,sorted
+unique,array_empty,sorted
+add,array_empty,sorted
+length,array_empty,sorted
+length,scalar_string,sorted
+select,object_simple,missing_keys
+map,object_simple,missing_keys
+sort,object_simple,sorted
+group_by,object_simple,sorted
+unique,object_simple,sorted
+length,object_simple,sorted
+length,null,sorted
+sort,array_mixed,unsorted
+add,array_object,has_duplicates

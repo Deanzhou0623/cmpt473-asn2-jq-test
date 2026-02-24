@@ -4,22 +4,22 @@ Name: Split4_Transform_Filters
 
 [Parameter]
 -- general syntax is parameter_name (type) : value1, value2, ...
-filter (enum) : select, map, sort, group_by, unique, add, length
-input_type (enum) : num_array, obj_array, mixed_array, empty_array, string, object, null
-input_state (enum) : normal, unsorted, duplicates, missing_keys
+filter_type (enum) : select, map, sort, group_by, unique, add, length
+input_data_type (enum) : array_numeric, array_object, array_mixed, array_empty, scalar_string, scalar_number, object_simple, null
+data_property (enum) : sorted, unsorted, has_duplicates, missing_keys
 
 [Constraint]
--- C1: sort/unique/group_by require array input types
-(filter = "sort" || filter = "unique" || filter = "group_by") => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array" || input_type = "empty_array")
--- C2: select/map require array input types
-(filter = "select" || filter = "map") => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array" || input_type = "empty_array")
--- C3: add requires array input types
-filter = "add" => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array" || input_type = "empty_array")
--- C4: length works on arrays, string, object, and null
-filter = "length" => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array" || input_type = "empty_array" || input_type = "string" || input_type = "object" || input_type = "null")
--- C5: missing_keys state only valid with obj_array
-input_state = "missing_keys" => input_type = "obj_array"
--- C6: unsorted/duplicates state only valid with non-empty array types
-(input_state = "unsorted" || input_state = "duplicates") => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array")
--- C7: scalar/null types must use normal state
-(input_type = "string" || input_type = "object" || input_type = "null" || input_type = "empty_array") => input_state = "normal"
+-- C1: sort/group_by/unique/add/map/select operate on arrays or object_simple; scalars and null are out of scope
+(filter_type = "sort" || filter_type = "group_by" || filter_type = "unique" || filter_type = "add" || filter_type = "map" || filter_type = "select") => (input_data_type = "array_numeric" || input_data_type = "array_object" || input_data_type = "array_mixed" || input_data_type = "array_empty" || input_data_type = "object_simple")
+-- C2: sort/group_by/unique ordering behavior is defined for sorted/unsorted/has_duplicates only
+(filter_type = "sort" || filter_type = "group_by" || filter_type = "unique") => (data_property = "sorted" || data_property = "unsorted" || data_property = "has_duplicates")
+-- C3: missing_keys data property applies to arrays of objects or object_simple
+data_property = "missing_keys" => (input_data_type = "array_object" || input_data_type = "object_simple")
+-- C4: length is defined for arrays, strings, objects, and null; scalar_number is excluded
+filter_type = "length" => (input_data_type = "array_numeric" || input_data_type = "array_object" || input_data_type = "array_mixed" || input_data_type = "array_empty" || input_data_type = "scalar_string" || input_data_type = "object_simple" || input_data_type = "null")
+-- C5: add reduces arrays; scalar reduction is not in scope
+filter_type = "add" => (input_data_type = "array_numeric" || input_data_type = "array_object" || input_data_type = "array_mixed" || input_data_type = "array_empty")
+-- C6: unsorted/has_duplicates state applies only to non-empty array types (implicit)
+(data_property = "unsorted" || data_property = "has_duplicates") => (input_data_type = "array_numeric" || input_data_type = "array_object" || input_data_type = "array_mixed")
+-- C7: scalar types, null, and empty_array have no meaningful ordering or duplicate state (implicit)
+(input_data_type = "scalar_string" || input_data_type = "scalar_number" || input_data_type = "null" || input_data_type = "array_empty") => data_property = "sorted"

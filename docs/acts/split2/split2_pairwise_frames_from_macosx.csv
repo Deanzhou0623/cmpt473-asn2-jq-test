@@ -1,0 +1,37 @@
+# ACTS Test Suite Generation: Mon Feb 23 22:02:21 PST 2026
+#  '*' represents don't care value 
+# Degree of interaction coverage: 2
+# Number of parameters: 4
+# Maximum number of values per parameter: 6
+# Number of configurations: 30
+output_mode,output_type,string_content_class,result_cardinality
+default,string,quote_backslash,multiple
+compact,string,unicode,single
+raw,string,embedded_newline,multiple
+join,string,plain,single
+raw0,string,quote_backslash,single
+default,number,not_applicable,single
+compact,number,not_applicable,multiple
+default,object,not_applicable,multiple
+compact,object,not_applicable,single
+default,array,not_applicable,multiple
+compact,array,not_applicable,single
+default,bool,not_applicable,multiple
+compact,bool,not_applicable,single
+default,null,not_applicable,multiple
+compact,null,not_applicable,single
+default,string,plain,multiple
+compact,string,plain,single
+raw,string,plain,single
+raw0,string,plain,multiple
+compact,string,quote_backslash,multiple
+raw,string,quote_backslash,multiple
+join,string,quote_backslash,multiple
+default,string,unicode,multiple
+raw,string,unicode,multiple
+join,string,unicode,multiple
+raw0,string,unicode,single
+default,string,embedded_newline,single
+compact,string,embedded_newline,multiple
+join,string,embedded_newline,single
+raw0,string,embedded_newline,single

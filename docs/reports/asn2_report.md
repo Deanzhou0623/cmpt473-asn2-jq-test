@@ -106,19 +106,19 @@
 
 | Parameter | Choices |
 |-----------|---------|
-| `filter` | `select`, `map`, `sort`, `group_by`, `unique`, `add`, `length` |
-| `input_type` | `num_array`, `obj_array`, `mixed_array`, `empty_array`, `string`, `object`, `null` |
-| `input_state` | `sorted`, `unsorted`, `duplicates`, `missing_keys`, `normal` |
+| `filter_type` | `select`, `map`, `sort`, `group_by`, `unique`, `add`, `length` |
+| `input_data_type` | `array_numeric`, `array_object`, `array_mixed`, `array_empty`, `scalar_string`, `scalar_number`, `object_simple`, `null` |
+| `data_property` | `sorted`, `unsorted`, `has_duplicates`, `missing_keys` |
 
 #### Constraints
 
 | ID | Constraint | Rationale |
 |----|-----------|-----------|
-| C1 | `filter in {sort, unique, group_by} => input_type is array variant` | These filters operate on arrays only |
-| C2 | `input_state = missing_keys => input_type = obj_array` | Missing-key behavior only applies to object arrays |
-| C3 | `input_state in {sorted, unsorted, duplicates} => input_type is array variant` | Ordering/dedup states only apply to arrays |
-| C4 | `filter = add => input_type is array variant` | `add` reduces arrays; scalar inputs are out of scope |
-| C5 | `filter = length => input_type in {array, string, object, null}` | Length is defined for these types; numeric scalars excluded |
+| C1 | `filter_type in {sort, group_by, unique, add, map, select} => input_data_type in {array_*, object_simple}` | These filters operate on arrays or object_simple; scalars and null are out of scope |
+| C2 | `filter_type in {sort, group_by, unique} => data_property in {sorted, unsorted, has_duplicates}` | Ordering/dedup behavior only applies to sortable data |
+| C3 | `data_property = missing_keys => input_data_type in {array_object, object_simple}` | Missing-key behavior applies to object arrays or simple objects |
+| C4 | `filter_type = length => input_data_type in {array_*, scalar_string, object_simple, null}` | Length is defined for these types; scalar_number excluded |
+| C5 | `filter_type = add => input_data_type in {array_*}` | `add` reduces arrays; scalar reduction is out of scope |
 
 ---
 
@@ -126,7 +126,7 @@
 
 ### Method
 
-Test frames were generated using the **category-partition method** and **combinatorial (pairwise / 2-way) coverage**. Split 3 used the **ACTS 3.0 tool** (jar at `__MACOSX/ACTS3.0/acts_3.0.jar`) to automatically generate frames from its ACTS input model:
+Test frames were generated using the **category-partition method** and **combinatorial (pairwise / 2-way) coverage**. Splits 3 and 4 used the **ACTS 3.0 tool** (jar at `__MACOSX/ACTS3.0/acts_3.0.jar`) to automatically generate frames from their ACTS input models. Example command (split 3):
 
 ```
 java -Dalgo=ipog -Ddoi=2 -Doutput=csv -Dmode=scratch \
@@ -143,7 +143,7 @@ java -Dalgo=ipog -Ddoi=2 -Doutput=csv -Dmode=scratch \
 | Split 1 | 5 | 5 | 18 | 18 | `docs/acts/split1/split1_pairwise_frames.csv` |
 | Split 2 | 4 | 4 | 30 | 30 | `docs/acts/split2/split2_pairwise_frames.csv` |
 | Split 3 | 3 | 4 | 12 | 12 | `docs/acts/split3/split3_pairwise_frames.csv` |
-| Split 4 | 3 | 7 | 34 | 15 | `docs/acts/split4/split4_pairwise_frames.csv` |
+| Split 4 | 3 | 7 | 38 | 15 | `docs/acts/split4/split4_pairwise_frames.csv` |
 
 ---
 
