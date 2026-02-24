@@ -12,11 +12,10 @@
 - Test path: `tests/split3/test_split3.py`
 - ACTS model: `docs/acts/split3/split3_acts_model.md`
 - ACTS input file: `docs/acts/split3/split3_acts_input.txt`
-- Pairwise frame file: `docs/acts/split3/split3_pairwise_frames.csv`
-- ACTS-generated CSV (from macOS folder run): `docs/acts/split3/split3_pairwise_from_macosx.csv`
+- Pairwise frame file (ACTS macOS generated): `docs/acts/split3/split3_pairwise_frames.csv`
 - Coverage strength: 2-way (pairwise)
 - ACTS runtime source: `__MACOSX/ACTS3.0/acts_3.0.jar`
-- ACTS generation command: `java -Dalgo=ipog -Ddoi=2 -Doutput=csv -Dmode=scratch -Dchandler=forbiddentuples -Dcheck=on -jar __MACOSX/ACTS3.0/acts_3.0.jar docs/acts/split3/split3_acts_input.txt docs/acts/split3/split3_pairwise_from_macosx.csv`
+- ACTS generation command: `java -Dalgo=ipog -Ddoi=2 -Doutput=csv -Dmode=scratch -Dchandler=forbiddentuples -Dcheck=on -jar __MACOSX/ACTS3.0/acts_3.0.jar docs/acts/split3/split3_acts_input.txt docs/acts/split3/split3_pairwise_frames.csv`
 - ACTS configurations generated: 12
 - Frames executed: 12
 - Execution command: `python3 -m pytest -q tests/split3`

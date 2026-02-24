@@ -95,6 +95,7 @@ def test_group_by_numbers():
 def test_unique_objects():
     """F12: unique on objects (no duplicates in this sense if we consider whole object)"""
     # [{"id": 1}, {"id": 2}, {"id": 1}, {"other": 3}] -> [{"id": 1}, {"id": 2}, {"other": 3}]
+    rc, stdout, stderr = run_jq(["unique", get_fixture_path("objects.json")])
     assert rc == 0
     expected_result = [
         {"id": 1},
