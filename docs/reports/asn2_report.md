@@ -320,7 +320,7 @@ To ensure that the jqlang will keep continuing to have a robust program the next
 
 - extend combinatorial depth for high-risk parameter (3-way+)
 - add targeted fuzzing or randomized tests for parsing and filter expressions,
-- run cross-version/platform regressions, and
+- run cross-version/platform regressions
 
 ## 8. Appendix: Use of LLMs
 
