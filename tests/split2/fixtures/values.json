@@ -1,0 +1,62 @@
+{
+  "plain": "hello",
+  "quote_backslash": "a\"b\\c",
+  "unicode": "h\u00e9\u2603",
+  "embedded_newline": "line1\nline2",
+  "number": 42,
+  "object": {
+    "k": "v"
+  },
+  "array": [
+    1,
+    2
+  ],
+  "bool": true,
+  "null": null,
+  "multi_strings": [
+    "m1",
+    "m2"
+  ],
+  "multi_quote_backslash": [
+    "a\"b\\c",
+    "x\"y\\z"
+  ],
+  "multi_unicode": [
+    "h\u00e9\u2603",
+    "na\u00efve"
+  ],
+  "multi_embedded_newline": [
+    "line1\nline2",
+    "rowA\nrowB"
+  ],
+  "multi_numbers": [
+    1,
+    2
+  ],
+  "multi_objects": [
+    {
+      "k": "v1"
+    },
+    {
+      "k": "v2"
+    }
+  ],
+  "multi_arrays": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ]
+  ],
+  "multi_bools": [
+    true,
+    false
+  ],
+  "multi_nulls": [
+    null,
+    null
+  ]
+}

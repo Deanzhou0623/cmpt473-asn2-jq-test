@@ -1,0 +1,20 @@
+[System]
+-- specify system name
+Name: Split2_Output_Formatting
+
+[Parameter]
+-- general syntax is parameter_name (type) : value1, value2, ...
+output_mode (enum) : default, compact, raw, join, raw0
+output_type (enum) : string, number, object, array, bool, null
+string_content_class (enum) : plain, quote_backslash, unicode, embedded_newline, not_applicable
+result_cardinality (enum) : single, multiple
+
+[Constraint]
+-- C1: if string_content_class is not not_applicable, output_type must be string
+string_content_class != "not_applicable" => output_type = "string"
+-- C2: if output_type is not string, string_content_class must be not_applicable
+output_type != "string" => string_content_class = "not_applicable"
+-- C3: if output_type is string, string_content_class must not be not_applicable
+output_type = "string" => string_content_class != "not_applicable"
+-- C4: raw/join/raw0 modes require output_type string
+(output_mode = "raw" || output_mode = "join" || output_mode = "raw0") => output_type = "string"

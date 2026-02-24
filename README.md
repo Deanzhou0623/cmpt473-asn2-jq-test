@@ -7,7 +7,7 @@ This repository is a team scaffold for CMPT Assignment 2 using `jq` as the Progr
 Each split is isolated so each teammate can work end-to-end in their own folder with minimal merge conflicts:
 
 - `docs/spec/split1.md`, `tests/split1/`
-- `docs/spec/split2.md`, `tests/split2/`
+- `docs/spec/split2.md`, `tests/split2/` (Tommy: formatting and encoding)
 - `docs/spec/split3.md`, `tests/split3/` (Dean: error handling + `-e` exit status)
 - `docs/spec/split4.md`, `tests/split4/`
 
@@ -18,7 +18,7 @@ ACTS models/frames and reports are also split-specific under `docs/acts/` and `d
 | Split | Owner | Scope |
 | --- | --- | --- |
 | Split 1 | TBD | Add spec, ACTS model/frames, tests, and report for Split 1 |
-| Split 2 | TBD | Add spec, ACTS model/frames, tests, and report for Split 2 |
+| Split 2 | Tommy Duong(tda49) | Formatting and encoding     |
 | Split 3 | Dean Zhou(dza68) | Error handling + `-e` / `--exit-status` |
 | Split 4 | TBD | Add spec, ACTS model/frames, tests, and report for Split 4 |
 
