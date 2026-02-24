@@ -39,4 +39,6 @@ Each generated test frame asserts:
 
 ## Generated Frame Set
 
-- Pairwise frame set for this split is recorded in `docs/acts/split2/split2_pairwise_frames.csv`.
+- Pairwise frame set for this split is recorded in `docs/acts/split2/split2_pairwise_frames.csv` (30 frames, F01–F30).
+- To regenerate from an ACTS export: run ACTS with strength 2, export CSV, then:
+  `python docs/acts/split2/convert_acts_output_to_frames.py` (optionally with `--input` / `--output`).
