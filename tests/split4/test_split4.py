@@ -8,10 +8,10 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from common.run_jq import run_jq
 
-FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures")
+FIXTURE_DIR = Path(__file__).parent / "fixtures"
 
 def get_fixture_path(name):
-    return os.path.join(FIXTURE_DIR, name)
+    return str(FIXTURE_DIR / name)
 
 def test_select_numbers():
     """F01: select( . > 1 ) on num_array [3, 1, 2, 2]"""
