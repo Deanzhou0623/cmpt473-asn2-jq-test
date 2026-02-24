@@ -1,16 +1,41 @@
-frame_id,filter,input_type,input_state,expect_stdout,pytest_test
-F01,select,num_array,normal,nonempty,test_select_numbers
-F02,map,obj_array,missing_keys,nonempty,test_map_missing_keys
-F03,sort,num_array,unsorted,sorted_array,test_sort_numbers
-F04,group_by,obj_array,duplicates,grouped_array,test_group_by_objects
-F05,unique,mixed_array,duplicates,unique_array,test_unique_mixed
-F06,add,num_array,normal,sum_value,test_add_numbers
-F07,length,string,normal,integer,test_length_string
-F08,select,obj_array,missing_keys,empty_or_subset,test_select_missing_keys
-F09,map,mixed_array,normal,transformed_array,test_map_mixed
-F10,sort,empty_array,normal,empty_array,test_sort_empty
-F11,group_by,num_array,unsorted,grouped_array,test_group_by_numbers
-F12,unique,obj_array,normal,same_array,test_unique_objects
-F13,add,empty_array,normal,null_or_empty,test_add_empty
-F14,length,object,normal,integer,test_length_object
-F15,length,null,normal,error_or_zero,test_length_null
+# ACTS Test Suite Generation: Mon Feb 23 21:48:38 PST 2026
+#  '*' represents don't care value 
+# Degree of interaction coverage: 2
+# Number of parameters: 3
+# Maximum number of values per parameter: 7
+# Number of configurations: 34
+filter,input_type,input_state
+select,num_array,unsorted
+select,obj_array,duplicates
+select,mixed_array,normal
+select,empty_array,normal
+map,num_array,duplicates
+map,obj_array,missing_keys
+map,mixed_array,unsorted
+map,empty_array,normal
+sort,num_array,normal
+sort,obj_array,unsorted
+sort,mixed_array,duplicates
+sort,empty_array,normal
+group_by,num_array,unsorted
+group_by,obj_array,normal
+group_by,mixed_array,duplicates
+group_by,empty_array,normal
+unique,num_array,unsorted
+unique,obj_array,missing_keys
+unique,mixed_array,duplicates
+unique,empty_array,normal
+add,num_array,unsorted
+add,obj_array,missing_keys
+add,mixed_array,duplicates
+add,empty_array,normal
+length,num_array,unsorted
+length,obj_array,missing_keys
+length,mixed_array,duplicates
+length,empty_array,normal
+length,string,normal
+length,object,normal
+length,null,normal
+select,obj_array,missing_keys
+sort,obj_array,missing_keys
+group_by,obj_array,missing_keys

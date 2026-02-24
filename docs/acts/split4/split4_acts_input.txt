@@ -1,0 +1,25 @@
+[System]
+-- specify system name
+Name: Split4_Transform_Filters
+
+[Parameter]
+-- general syntax is parameter_name (type) : value1, value2, ...
+filter (enum) : select, map, sort, group_by, unique, add, length
+input_type (enum) : num_array, obj_array, mixed_array, empty_array, string, object, null
+input_state (enum) : normal, unsorted, duplicates, missing_keys
+
+[Constraint]
+-- C1: sort/unique/group_by require array input types
+(filter = "sort" || filter = "unique" || filter = "group_by") => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array" || input_type = "empty_array")
+-- C2: select/map require array input types
+(filter = "select" || filter = "map") => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array" || input_type = "empty_array")
+-- C3: add requires array input types
+filter = "add" => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array" || input_type = "empty_array")
+-- C4: length works on arrays, string, object, and null
+filter = "length" => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array" || input_type = "empty_array" || input_type = "string" || input_type = "object" || input_type = "null")
+-- C5: missing_keys state only valid with obj_array
+input_state = "missing_keys" => input_type = "obj_array"
+-- C6: unsorted/duplicates state only valid with non-empty array types
+(input_state = "unsorted" || input_state = "duplicates") => (input_type = "num_array" || input_type = "obj_array" || input_type = "mixed_array")
+-- C7: scalar/null types must use normal state
+(input_type = "string" || input_type = "object" || input_type = "null" || input_type = "empty_array") => input_state = "normal"

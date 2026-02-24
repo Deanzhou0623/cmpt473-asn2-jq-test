@@ -138,13 +138,12 @@ java -Dalgo=ipog -Ddoi=2 -Doutput=csv -Dmode=scratch \
 
 ### Frame Counts
 
-| Split | Parameters | Constraints | Pairwise Frames | Frame File |
-|-------|-----------|-------------|-----------------|------------|
-| Split 1 | 5 | 5 | 18 | `docs/acts/split1/split1_pairwise_frames.csv` |
-| Split 2 | 4 | 4 | 30 | `docs/acts/split2/split2_pairwise_frames.csv` |
-| Split 3 | 3 | 4 | 12 | `docs/acts/split3/split3_pairwise_frames.csv` |
-| Split 4 | 3 | 5 | 15 | `docs/acts/split4/split4_pairwise_frames.csv` |
-| **Total** | | | **75** | |
+| Split | Parameters | Constraints | ACTS Frames Generated | Tests Implemented | Frame File |
+|-------|-----------|-------------|----------------------|-------------------|------------|
+| Split 1 | 5 | 5 | 18 | 18 | `docs/acts/split1/split1_pairwise_frames.csv` |
+| Split 2 | 4 | 4 | 30 | 30 | `docs/acts/split2/split2_pairwise_frames.csv` |
+| Split 3 | 3 | 4 | 12 | 12 | `docs/acts/split3/split3_pairwise_frames.csv` |
+| Split 4 | 3 | 7 | 34 | 15 | `docs/acts/split4/split4_pairwise_frames.csv` |
 
 ---
 
@@ -249,6 +248,8 @@ All 30 frames executed by the parameterized test `test_split2_frame[F01]`–`tes
 | **Total** | | **75** | **75** | **0** | **0** |
 
 **Test environment (macOS final run):**
+- Auther: dean Zhou
+- Reivewer: Tommy Duong
 - OS: macOS 15.7.3 (Darwin 24.6.0, arm64)
 - Python: 3.10.11 / pytest 9.0.2
 - jq: jq-1.7.1-apple
