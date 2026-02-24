@@ -17,6 +17,9 @@
 3. `(null_input = on) => (input_content = valid_json OR input_content = empty)`
 4. `(input_content = missing_file) => (raw_input = off AND slurp = off AND null_input = off)`
 
+These logical constraints are encoded for ACTS in
+`docs/acts/split1/split1_acts_input.txt`.
+
 ## Mapping to Concrete CLI
 
 - `input_source = file` -> pass fixture file path as argument
@@ -46,6 +49,27 @@
 - **Parse error** (invalid JSON without `-R`): rc=nonzero, stderr contains "parse error"
 - **Empty file**: no output (default), `[]` (with `-s`), no output (with `-R`)
 
+## ACTS Generation
+
+- **ACTS input file:** `docs/acts/split1/split1_acts_input.txt`
+- **ACTS jar:** `__MACOSX/ACTS3.0/acts_3.0.jar`
+- **Generation command (strength = 2, pairwise):**
+
+  ```bash
+  java -Dalgo=ipog -Ddoi=2 -Doutput=csv -Dmode=scratch -Dchandler=forbiddentuples -Dcheck=on ^
+       -jar __MACOSX/ACTS3.0/acts_3.0.jar ^
+       docs/acts/split1/split1_acts_input.txt ^
+       docs/acts/split1/acts_generated.csv
+  ```
+
+- **Frames converter:** `docs/acts/split1/convert_acts_output_to_frames.py`
+- **Frames CSV:** `docs/acts/split1/split1_pairwise_frames.csv`
+
+Running the ACTS command followed by the converter regenerates the
+pairwise frame set and associated oracle expectations used by the
+pytest suite.
+
 ## Generated Frame Set
 
-See `split1_pairwise_frames.csv` for the complete set of pairwise-generated test frames.
+See `split1_pairwise_frames.csv` for the complete set of ACTS-generated
+pairwise test frames and oracles.

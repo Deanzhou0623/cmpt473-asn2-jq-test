@@ -1,0 +1,21 @@
+[System]
+-- specify system name
+Name: Split1_Input_Modes
+
+[Parameter]
+-- general syntax is parameter_name (type) : value1, value2, ...
+input_source (enum) : file, stdin
+input_content (enum) : valid_json, multi_json, plain_text, empty, invalid_json, missing_file
+raw_input (enum) : off, on
+slurp (enum) : off, on
+null_input (enum) : off, on
+
+[Constraint]
+-- C1: missing_file can only occur when using a file path argument
+input_content = "missing_file" => input_source = "file"
+-- C2: null-input ignores the input stream, so -R/-s must be off
+null_input = "on" => raw_input = "off" && slurp = "off"
+-- C3: when -n is on, the actual content is irrelevant; restrict to {valid_json, empty}
+null_input = "on" => (input_content = "valid_json" || input_content = "empty")
+-- C4: missing_file isolates the file-open error from other flags
+input_content = "missing_file" => (raw_input = "off" && slurp = "off" && null_input = "off")

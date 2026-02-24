@@ -2,8 +2,14 @@
 
 Tests cover file vs stdin input, -R (raw-input), -s (slurp),
 -n (null-input), and error cases (missing file, invalid JSON).
+
+Frames and expectations are generated via ACTS and
+`docs/acts/split1/convert_acts_output_to_frames.py`.
 """
 
+from __future__ import annotations
+
+import csv
 import json
 import re
 import sys
@@ -15,7 +21,10 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from common.run_jq import run_jq
 
-FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
+
+THIS_DIR = Path(__file__).resolve().parent
+FIXTURES_DIR = THIS_DIR / "fixtures"
+FRAMES_CSV = THIS_DIR.parents[2] / "docs" / "acts" / "split1" / "split1_pairwise_frames.csv"
 
 
 def fixture_path(name: str) -> str:
@@ -23,7 +32,7 @@ def fixture_path(name: str) -> str:
 
 
 def read_fixture(name: str) -> str:
-    return (FIXTURES_DIR / name).read_text()
+    return (FIXTURES_DIR / name).read_text(encoding="utf-8")
 
 
 def parse_json_stream(text: str) -> list:
@@ -47,194 +56,140 @@ def assert_stderr_matches(stderr: str, pattern: str) -> None:
     )
 
 
-# ---------------------------------------------------------------------------
-# F01: file + valid_json + default mode
-# ---------------------------------------------------------------------------
-def test_file_valid_json_default() -> None:
-    rc, out, err = run_jq([".", fixture_path("valid.json")])
-    assert rc == 0
-    assert json.loads(out) == {"a": 1, "b": "hello", "arr": [1, 2, 3]}
-    assert err.strip() == ""
+def load_frames() -> list[dict[str, str]]:
+    with FRAMES_CSV.open("r", encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
 
 
-# ---------------------------------------------------------------------------
-# F02: stdin + valid_json + default mode
-# ---------------------------------------------------------------------------
-def test_stdin_valid_json_default() -> None:
-    content = read_fixture("valid.json")
-    rc, out, err = run_jq([".", "-"], input_text=content)
-    assert rc == 0
-    assert json.loads(out) == {"a": 1, "b": "hello", "arr": [1, 2, 3]}
-    assert err.strip() == ""
+def build_invocation(frame: dict[str, str]) -> tuple[list[str], str | None, str | None]:
+    """Return (jq_args, input_text, fixture_name) for a given frame."""
+    raw_input = frame["raw_input"]
+    slurp = frame["slurp"]
+    null_input = frame["null_input"]
+    input_source = frame["input_source"]
+    input_content = frame["input_content"]
+
+    args: list[str] = []
+    if raw_input == "on":
+        args.append("-R")
+    if slurp == "on":
+        args.append("-s")
+    if null_input == "on":
+        args.append("-n")
+
+    args.append(".")
+
+    fixture_name: str | None
+    if input_content == "valid_json":
+        fixture_name = "valid.json"
+    elif input_content == "multi_json":
+        fixture_name = "multi.json"
+    elif input_content == "plain_text":
+        fixture_name = "plain.txt"
+    elif input_content == "empty":
+        fixture_name = "empty.json"
+    elif input_content == "invalid_json":
+        fixture_name = "invalid.json"
+    elif input_content == "missing_file":
+        fixture_name = "nonexistent.json"
+    else:
+        raise AssertionError(f"Unknown input_content: {input_content}")
+
+    input_text: str | None = None
+    if input_source == "file":
+        # Pass the fixture path as positional argument (even when -n ignores it).
+        args.append(fixture_path(fixture_name))
+    elif input_source == "stdin":
+        args.append("-")
+        if input_content != "missing_file":
+            input_text = read_fixture(fixture_name)
+    else:
+        raise AssertionError(f"Unknown input_source: {input_source}")
+
+    return args, input_text, fixture_name
 
 
-# ---------------------------------------------------------------------------
-# F03: file + multi_json + default mode
-# ---------------------------------------------------------------------------
-def test_file_multi_json_default() -> None:
-    rc, out, err = run_jq([".", fixture_path("multi.json")])
-    assert rc == 0
-    values = parse_json_stream(out)
-    assert values == [{"x": 1}, {"x": 2}]
-    assert err.strip() == ""
+def assert_expectations(
+    frame: dict[str, str], rc: int, out: str, err: str, fixture_name: str | None
+) -> None:
+    # Return code class
+    expect_rc = frame["expect_rc"]
+    if expect_rc == "0":
+        assert rc == 0
+    elif expect_rc == "2":
+        assert rc == 2
+    elif expect_rc == "nonzero":
+        assert rc != 0
+    else:
+        raise AssertionError(f"Unsupported expect_rc: {expect_rc}")
+
+    # Stderr expectations
+    pattern = frame["expect_stderr_pattern"]
+    if pattern == "empty":
+        assert err.strip() == ""
+    else:
+        assert_stderr_matches(err, pattern)
+
+    # Stdout expectations
+    stdout_class = frame["expect_stdout"]
+
+    if stdout_class == "json_object":
+        assert json.loads(out) == {"a": 1, "b": "hello", "arr": [1, 2, 3]}
+        return
+
+    if stdout_class == "multi_json_values":
+        values = parse_json_stream(out)
+        assert values == [{"x": 1}, {"x": 2}]
+        return
+
+    if stdout_class == "array_of_one":
+        assert json.loads(out) == [{"a": 1, "b": "hello", "arr": [1, 2, 3]}]
+        return
+
+    if stdout_class == "array_of_two":
+        assert json.loads(out) == [{"x": 1}, {"x": 2}]
+        return
+
+    if stdout_class == "quoted_lines":
+        assert fixture_name is not None
+        expected_text = read_fixture(fixture_name)
+        expected_lines = expected_text.splitlines()
+        lines = [json.loads(line) for line in out.strip().split("\n")] if out.strip() else []
+        assert lines == expected_lines
+        return
+
+    if stdout_class == "quoted_line":
+        assert fixture_name is not None
+        expected_text = read_fixture(fixture_name).rstrip("\n")
+        result = json.loads(out)
+        assert isinstance(result, str)
+        assert result == expected_text
+        return
+
+    if stdout_class == "concatenated_string":
+        assert fixture_name is not None
+        expected_text = read_fixture(fixture_name)
+        result = json.loads(out)
+        assert result == expected_text
+        return
+
+    if stdout_class == "null":
+        assert json.loads(out) is None
+        return
+
+    if stdout_class == "empty":
+        assert out.strip() == ""
+        return
+
+    if stdout_class == "empty_array":
+        assert json.loads(out) == []
+        return
+
+    raise AssertionError(f"Unsupported expect_stdout class: {stdout_class}")
 
 
-# ---------------------------------------------------------------------------
-# F04: stdin + multi_json + default mode
-# ---------------------------------------------------------------------------
-def test_stdin_multi_json_default() -> None:
-    content = read_fixture("multi.json")
-    rc, out, err = run_jq([".", "-"], input_text=content)
-    assert rc == 0
-    values = parse_json_stream(out)
-    assert values == [{"x": 1}, {"x": 2}]
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F05: file + plain_text + -R (raw-input)
-# ---------------------------------------------------------------------------
-def test_file_plain_text_raw_input() -> None:
-    rc, out, err = run_jq(["-R", ".", fixture_path("plain.txt")])
-    assert rc == 0
-    lines = [json.loads(line) for line in out.strip().split("\n")]
-    assert lines == ["hello world", "this is plain text", "line three"]
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F06: stdin + plain_text + -R (raw-input)
-# ---------------------------------------------------------------------------
-def test_stdin_plain_text_raw_input() -> None:
-    content = read_fixture("plain.txt")
-    rc, out, err = run_jq(["-R", ".", "-"], input_text=content)
-    assert rc == 0
-    lines = [json.loads(line) for line in out.strip().split("\n")]
-    assert lines == ["hello world", "this is plain text", "line three"]
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F07: file + valid_json + -s (slurp)
-# ---------------------------------------------------------------------------
-def test_file_valid_json_slurp() -> None:
-    rc, out, err = run_jq(["-s", ".", fixture_path("valid.json")])
-    assert rc == 0
-    assert json.loads(out) == [{"a": 1, "b": "hello", "arr": [1, 2, 3]}]
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F08: stdin + multi_json + -s (slurp)
-# ---------------------------------------------------------------------------
-def test_stdin_multi_json_slurp() -> None:
-    content = read_fixture("multi.json")
-    rc, out, err = run_jq(["-s", ".", "-"], input_text=content)
-    assert rc == 0
-    assert json.loads(out) == [{"x": 1}, {"x": 2}]
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F09: file + plain_text + -R -s (raw + slurp)
-# ---------------------------------------------------------------------------
-def test_file_plain_text_raw_slurp() -> None:
-    rc, out, err = run_jq(["-R", "-s", ".", fixture_path("plain.txt")])
-    assert rc == 0
-    result = json.loads(out)
-    assert result == "hello world\nthis is plain text\nline three\n"
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F10: stdin + valid_json + -R -s (raw + slurp)
-# ---------------------------------------------------------------------------
-def test_stdin_valid_json_raw_slurp() -> None:
-    content = read_fixture("valid.json")
-    rc, out, err = run_jq(["-R", "-s", ".", "-"], input_text=content)
-    assert rc == 0
-    result = json.loads(out)
-    # The entire file content is read as a raw string (including trailing newline)
-    assert result == content
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F11: file + valid_json + -n (null-input)
-# ---------------------------------------------------------------------------
-def test_file_null_input() -> None:
-    rc, out, err = run_jq(["-n", ".", fixture_path("valid.json")])
-    assert rc == 0
-    assert json.loads(out) is None
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F12: stdin + empty + -n (null-input)
-# ---------------------------------------------------------------------------
-def test_stdin_null_input_empty() -> None:
-    rc, out, err = run_jq(["-n", ".", "-"], input_text="")
-    assert rc == 0
-    assert json.loads(out) is None
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F13: file + missing_file -> error
-# ---------------------------------------------------------------------------
-def test_file_missing_error() -> None:
-    rc, out, err = run_jq([".", fixture_path("nonexistent.json")])
-    assert rc == 2
-    assert out.strip() == ""
-    assert_stderr_matches(err, r"could not open|no such file")
-
-
-# ---------------------------------------------------------------------------
-# F14: file + invalid_json -> parse error
-# ---------------------------------------------------------------------------
-def test_file_invalid_json_parse_error() -> None:
-    rc, out, err = run_jq([".", fixture_path("invalid.json")])
-    assert rc != 0
-    assert out.strip() == ""
-    assert_stderr_matches(err, r"parse error")
-
-
-# ---------------------------------------------------------------------------
-# F15: stdin + invalid_json -> parse error
-# ---------------------------------------------------------------------------
-def test_stdin_invalid_json_parse_error() -> None:
-    content = read_fixture("invalid.json")
-    rc, out, err = run_jq([".", "-"], input_text=content)
-    assert rc != 0
-    assert out.strip() == ""
-    assert_stderr_matches(err, r"parse error")
-
-
-# ---------------------------------------------------------------------------
-# F16: file + invalid_json + -R -> raw-input bypasses JSON parsing
-# ---------------------------------------------------------------------------
-def test_file_invalid_json_raw_input_bypasses_parse() -> None:
-    rc, out, err = run_jq(["-R", ".", fixture_path("invalid.json")])
-    assert rc == 0
-    result = json.loads(out)
-    assert isinstance(result, str)
-    assert err.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F17: file + empty + default mode
-# ---------------------------------------------------------------------------
-def test_file_empty_default() -> None:
-    rc, out, err = run_jq([".", fixture_path("empty.json")])
-    assert rc == 0
-    assert out.strip() == ""
-
-
-# ---------------------------------------------------------------------------
-# F18: file + empty + -s (slurp)
-# ---------------------------------------------------------------------------
-def test_file_empty_slurp() -> None:
-    rc, out, err = run_jq(["-s", ".", fixture_path("empty.json")])
-    assert rc == 0
-    assert json.loads(out) == []
-    assert err.strip() == ""
+@pytest.mark.parametrize("frame", load_frames(), ids=lambda f: f["frame_id"])
+def test_split1_frame(frame: dict[str, str]) -> None:
+    args, input_text, fixture_name = build_invocation(frame)
+    rc, out, err = run_jq(args, input_text=input_text)
+    assert_expectations(frame, rc, out, err, fixture_name)

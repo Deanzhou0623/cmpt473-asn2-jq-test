@@ -13,9 +13,9 @@
 - ACTS model: `docs/acts/split1/split1_acts_model.md`
 - Pairwise frame file: `docs/acts/split1/split1_pairwise_frames.csv`
 - Coverage strength: 2-way (pairwise)
-- Frames executed: 18
-- Total pytest tests run: 18
-- Passed: 18, Failed: 0, Skipped: 0
+- Frames executed: 11
+- Total pytest tests run: 11
+- Passed: 11, Failed: 0, Skipped: 0
 
 ## Coverage Notes
 
@@ -34,26 +34,17 @@ Error paths tested:
 
 ## Frame-to-Test Traceability
 
-| Frame | Pytest Test | Outcome |
-| --- | --- | --- |
-| F01 | `test_file_valid_json_default` | Pass |
-| F02 | `test_stdin_valid_json_default` | Pass |
-| F03 | `test_file_multi_json_default` | Pass |
-| F04 | `test_stdin_multi_json_default` | Pass |
-| F05 | `test_file_plain_text_raw_input` | Pass |
-| F06 | `test_stdin_plain_text_raw_input` | Pass |
-| F07 | `test_file_valid_json_slurp` | Pass |
-| F08 | `test_stdin_multi_json_slurp` | Pass |
-| F09 | `test_file_plain_text_raw_slurp` | Pass |
-| F10 | `test_stdin_valid_json_raw_slurp` | Pass |
-| F11 | `test_file_null_input` | Pass |
-| F12 | `test_stdin_null_input_empty` | Pass |
-| F13 | `test_file_missing_error` | Pass |
-| F14 | `test_file_invalid_json_parse_error` | Pass |
-| F15 | `test_stdin_invalid_json_parse_error` | Pass |
-| F16 | `test_file_invalid_json_raw_input_bypasses_parse` | Pass |
-| F17 | `test_file_empty_default` | Pass |
-| F18 | `test_file_empty_slurp` | Pass |
+All frames in `docs/acts/split1/split1_pairwise_frames.csv` are executed
+by the single parameterized test `test_split1_frame` in
+`tests/split1/test_split1.py`. Each CSV row encodes:
+
+- the ACTS-derived parameter values (`input_source`, `input_content`, `raw_input`, `slurp`, `null_input`),
+- the expected return-code class (`expect_rc`),
+- the expected stdout classification (`expect_stdout`),
+- and the expected stderr pattern (`expect_stderr_pattern`).
+
+Pytest parametrization uses the `frame_id` column (F01–F11) for readable
+test IDs in the output.
 
 ## Bugs Found
 

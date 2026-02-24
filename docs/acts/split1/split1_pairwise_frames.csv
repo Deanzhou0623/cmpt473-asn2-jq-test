@@ -1,19 +1,12 @@
 frame_id,input_source,input_content,raw_input,slurp,null_input,expect_rc,expect_stdout,expect_stderr_pattern,pytest_test,result
-F01,file,valid_json,off,off,off,0,json_object,empty,test_file_valid_json_default,pass
-F02,stdin,valid_json,off,off,off,0,json_object,empty,test_stdin_valid_json_default,pass
-F03,file,multi_json,off,off,off,0,multi_json_values,empty,test_file_multi_json_default,pass
-F04,stdin,multi_json,off,off,off,0,multi_json_values,empty,test_stdin_multi_json_default,pass
-F05,file,plain_text,on,off,off,0,quoted_lines,empty,test_file_plain_text_raw_input,pass
-F06,stdin,plain_text,on,off,off,0,quoted_lines,empty,test_stdin_plain_text_raw_input,pass
-F07,file,valid_json,off,on,off,0,array_of_one,empty,test_file_valid_json_slurp,pass
-F08,stdin,multi_json,off,on,off,0,array_of_two,empty,test_stdin_multi_json_slurp,pass
-F09,file,plain_text,on,on,off,0,concatenated_string,empty,test_file_plain_text_raw_slurp,pass
-F10,stdin,valid_json,on,on,off,0,concatenated_string,empty,test_stdin_valid_json_raw_slurp,pass
-F11,file,valid_json,off,off,on,0,null,empty,test_file_null_input,pass
-F12,stdin,empty,off,off,on,0,null,empty,test_stdin_null_input_empty,pass
-F13,file,missing_file,off,off,off,2,empty,could not open|no such file,test_file_missing_error,pass
-F14,file,invalid_json,off,off,off,nonzero,empty,parse error,test_file_invalid_json_parse_error,pass
-F15,stdin,invalid_json,off,off,off,nonzero,empty,parse error,test_stdin_invalid_json_parse_error,pass
-F16,file,invalid_json,on,off,off,0,quoted_line,empty,test_file_invalid_json_raw_input_bypasses_parse,pass
-F17,file,empty,off,off,off,0,empty,empty,test_file_empty_default,pass
-F18,file,empty,off,on,off,0,empty_array,empty,test_file_empty_slurp,pass
+F01,file,valid_json,on,on,off,0,concatenated_string,empty,test_split1_frame,
+F02,stdin,valid_json,off,off,on,0,null,empty,test_split1_frame,
+F03,file,multi_json,off,on,off,0,array_of_two,empty,test_split1_frame,
+F04,stdin,multi_json,on,off,off,0,quoted_lines,empty,test_split1_frame,
+F05,file,plain_text,off,off,off,nonzero,empty,parse error,test_split1_frame,
+F06,stdin,plain_text,on,on,off,0,concatenated_string,empty,test_split1_frame,
+F07,file,empty,off,off,on,0,null,empty,test_split1_frame,
+F08,stdin,empty,on,on,off,0,concatenated_string,empty,test_split1_frame,
+F09,file,invalid_json,off,off,off,nonzero,empty,parse error,test_split1_frame,
+F10,stdin,invalid_json,on,on,off,0,concatenated_string,empty,test_split1_frame,
+F11,file,missing_file,off,off,off,2,empty,could not open|no such file,test_split1_frame,
