@@ -2,7 +2,7 @@
 
 ## Environment
 
-- Date: 2026-02-22 23:18:12 Pacific Standard Time
+- Date: 2026-02-22 23:18:12 Pacific Standard Time 
 - OS: Windows-11-10.0.26100-SP0
 - Python version: 3.12.10
 - jq version: jq-1.8.1
@@ -12,13 +12,16 @@
 - Test path: `tests/split2/test_split2.py`
 - ACTS model: `docs/acts/split2/split2_acts_model.md`
 - Constraint model: `docs/acts/split2/split2_constraints.md`
-- Pairwise frame file: `docs/acts/split2/split2_pairwise_frames.csv`
+- Pairwise frame file: `docs/acts/split2/split2_pairwise_frames.csv` (30 frames, F01–F30)
+- Frame set source: ACTS export converted via `docs/acts/split2/convert_acts_output_to_frames.py`
 - Coverage strength: 2-way (pairwise)
 - Frames generated: 30
 - Total pytest tests run: 30
 - Passed: 30
 - Failed: 0
 - Skipped: 0
+
+*(Re-run `python -m pytest tests/split2 -q` after regenerating the frame CSV to refresh pass/fail counts.)*
 
 ## Coverage Notes
 
