@@ -26,7 +26,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--input",
         type=Path,
-        default=Path("docs/acts/split2/Split2_Output_Formatting-output.csv"),
+        default=Path("docs/acts/split2/acts_generated.csv"),
         help="Path to ACTS exported CSV.",
     )
     parser.add_argument(
