@@ -1,0 +1,19 @@
+# ACTS Test Suite Generation: Mon Feb 23 20:35:06 PST 2026
+#  '*' represents don't care value 
+# Degree of interaction coverage: 2
+# Number of parameters: 3
+# Maximum number of values per parameter: 7
+# Number of configurations: 12
+input_file_state,filter_kind,exit_status_flag
+valid,dot,on
+invalid_json,dot,off
+empty,dot,off
+missing,dot,off
+no_read_permission,dot,off
+valid,invalid_program,off
+valid,field_a,on
+valid,field_b,on
+valid,field_c,on
+valid,field_missing,on
+valid,empty_filter,on
+valid,invalid_program,on
