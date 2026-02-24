@@ -1,16 +1,15 @@
-# CMPT 473 Assignment 2 — Merged Test Report
-## jq Functional Testing via Input Space Partitioning
+# CMPT 473 Assignment 2 Test Report
 
 ---
 
 ## 1. Introduction & Program Under Test
 
-**Program:** `jq` — a lightweight, portable command-line JSON processor
+**Program:** `jq` a lightweight, portable command-line JSON processor
 **Version tested:** jq-1.7.1-apple (macOS), jq-1.6 (macOS), jq-1.8.1 (Windows)
 **Specification:** [jq Manual](https://jqlang.github.io/jq/manual/)
 **Source:** [https://github.com/jqlang/jq](https://github.com/jqlang/jq)
 
-`jq` reads JSON input (from a file or stdin), applies a filter expression, and writes the result to stdout. It supports a wide range of input modes, output formatting options, transformation filters, and error/exit-code behaviors — each of which forms a distinct testable scope.
+`jq` reads JSON input (from a file or stdin), applies a filter expression, and writes the result to stdout. It supports a wide range of input modes, output formatting options, transformation filters, and error/exit-code behaviors.
 
 ### Team Contributions
 
@@ -25,9 +24,9 @@
 
 ## 2. Input Space Model
 
-### 2.1 Split 1 — Input Modes & File Ingestion
+### 2.1 Split 1 Input Modes & File Ingestion
 
-**Specification reference:** jq manual §"Invoking jq", options `-R`, `-s`, `-n`
+**Specification reference:** jq manual: "Invoking jq", options `-R`, `-s`, `-n`
 
 #### Parameters & Categories
 
@@ -51,9 +50,9 @@
 
 ---
 
-### 2.2 Split 2 — Output Formatting & Encoding
+### 2.2 Split 2 Output Formatting & Encoding
 
-**Specification reference:** jq manual §"Basic filters", options `-c`, `-r`, `-j`, `--raw-output0`
+**Specification reference:** jq manual: "Basic filters", options `-c`, `-r`, `-j`, `--raw-output0`
 
 #### Parameters & Categories
 
@@ -75,9 +74,9 @@
 
 ---
 
-### 2.3 Split 3 — Error Handling & Exit Status
+### 2.3 Split 3 Error Handling & Exit Status
 
-**Specification reference:** jq manual §"Invoking jq", option `-e`/`--exit-status`; jq exit code table
+**Specification reference:** jq manual: "Invoking jq", option `-e`/`--exit-status`; jq exit code table
 
 #### Parameters & Categories
 
@@ -91,16 +90,16 @@
 
 | ID | Constraint | Rationale |
 |----|-----------|-----------|
-| C1 | `input_file_state != valid => filter_kind = dot` | Error states (invalid/missing/permission) are tested with the identity filter only to isolate the error source |
+| C1 | `input_file_state != valid => filter_kind = dot` | Ensures test outcomes (exit/stderr) reflect only file/parse/open errors |
 | C2 | `input_file_state != valid => exit_status_flag = off` | `-e` behavior is only meaningful when a valid result is produced |
 | C3 | `filter_kind = invalid_program => input_file_state = valid` | Compile errors require a valid, readable input file |
 | C4 | `filter_kind in {field_a, field_b, field_c, field_missing, empty_filter} => input_file_state = valid AND exit_status_flag = on` | `-e` exit-code semantics are tested only on valid input with `-e` enabled |
 
 ---
 
-### 2.4 Split 4 — Transform/Computation Filters
+### 2.4 Split 4 Transform/Computation Filters
 
-**Specification reference:** jq manual §"Builtin operators and functions" (`select`, `map`, `sort`, `group_by`, `unique`, `add`, `length`)
+**Specification reference:** jq manual: "Builtin operators and functions" (`select`, `map`, `sort`, `group_by`, `unique`, `add`, `length`)
 
 #### Parameters & Categories
 
@@ -115,7 +114,7 @@
 | ID | Constraint | Rationale |
 |----|-----------|-----------|
 | C1 | `filter_type in {sort, group_by, unique, add, map, select} => input_data_type in {array_*, object_simple}` | These filters operate on arrays or object_simple; scalars and null are out of scope |
-| C2 | `filter_type in {sort, group_by, unique} => data_property in {sorted, unsorted, has_duplicates}` | Ordering/dedup behavior only applies to sortable data |
+| C2 | `filter_type in {sort, group_by, unique} => data_property in {sorted, unsorted, has_duplicates}` | Behavior only applies to sortable data |
 | C3 | `data_property = missing_keys => input_data_type in {array_object, object_simple}` | Missing-key behavior applies to object arrays or simple objects |
 | C4 | `filter_type = length => input_data_type in {array_*, scalar_string, object_simple, null}` | Length is defined for these types; scalar_number excluded |
 | C5 | `filter_type = add => input_data_type in {array_*}` | `add` reduces arrays; scalar reduction is out of scope |
@@ -151,13 +150,13 @@ java -Dalgo=ipog -Ddoi=2 -Doutput=csv -Dmode=scratch \
 
 ### Method
 
-Each pairwise frame maps directly to one pytest test function. Tests invoke `jq` as a subprocess via the shared helper `tests/common/run_jq.py` and assert on:
+Each pairwise frame maps directly to one pytest test function. Tests invoke `jq` by the shared helper `tests/common/run_jq.py` and assert on:
 
-- **Return code** (`rc`) — exact value or nonzero class
-- **stdout** — JSON structural equality (`json.loads`) or exact byte comparison
-- **stderr** — empty, or pattern match (e.g., `parse`, `compile|syntax`, `could not open`)
+- **Return code** (`rc`): exact value or nonzero class
+- **stdout**: JSON structural equality (`json.loads`) or exact byte comparison
+- **stderr**: empty, or pattern match (e.g., `parse`, `compile|syntax`, `could not open`)
 
-### 4.1 Split 1 — Results
+### 4.1 Split 1 Results
 
 | Frame | Test | rc | stdout | stderr | Result |
 |-------|------|----|--------|--------|--------|
@@ -182,7 +181,7 @@ Each pairwise frame maps directly to one pytest test function. Tests invoke `jq`
 
 **18/18 passed.**
 
-### 4.2 Split 2 — Results
+### 4.2 Split 2 Results
 
 All 30 frames executed by the parameterized test `test_split2_frame[F01]`–`test_split2_frame[F30]`. Each frame asserts exact stdout byte output (including newline/NUL terminators) and empty stderr.
 
@@ -194,7 +193,7 @@ All 30 frames executed by the parameterized test `test_split2_frame[F01]`–`tes
 
 **30/30 passed.**
 
-### 4.3 Split 3 — Results
+### 4.3 Split 3 Results
 
 | Frame | Test | Expected rc | Expected stderr | Result |
 |-------|------|-------------|-----------------|--------|
@@ -213,7 +212,7 @@ All 30 frames executed by the parameterized test `test_split2_frame[F01]`–`tes
 
 **12/12 passed.**
 
-### 4.4 Split 4 — Results
+### 4.4 Split 4 Results
 
 | Frame | Test | Filter | Input | Result |
 |-------|------|--------|-------|--------|
@@ -275,27 +274,45 @@ No confirmed jq defects were found across all four splits. All tested behaviors 
 
 ## 7. Observations and Conclusions
 
-### Split 1 — Input Modes
+### Split Observations
+
+### Split 1 Input Modes
 - File and stdin produce identical output for the same content, confirming input source transparency.
 - `-R` reliably bypasses JSON parsing even for malformed input.
 - `-R -s` correctly concatenates all lines (with newlines) into a single JSON string.
 - `-n` ignores all input regardless of source or content.
 - Empty file produces no output (exit 0) in default mode and `[]` with `-s`.
 
-### Split 2 — Output Formatting
+### Split 2 Output Formatting
 - All four formatting modes (`-c`, `-r`, `-j`, `--raw-output0`) behave exactly as documented.
 - Exact byte-level assertions caught that `--raw-output0` uses NUL (`\x00`) not newline as the record terminator.
 - `-j` suppresses inter-record newlines but preserves embedded newlines within strings.
 - Unicode and backslash escaping rules differ correctly between JSON mode (default/compact) and raw mode.
 
-### Split 3 — Error Handling & Exit Status
+### Split 3 Error Handling & Exit Status
 - Exit codes align with the jq manual: `2` for file errors, `3` for compile errors, `1` for `-e` with false/null output, `4` for `-e` with no output.
 - Stderr patterns are consistent and parseable across jq versions (1.6, 1.7, 1.8).
 - The `-e` flag only affects exit code, not stdout content.
 
-### Split 4 — Transform Filters
+### Split 4 Transform Filters
 - `group_by` and `unique` both sort before grouping/deduplicating, consistent with the spec.
 - `group_by(.id)` correctly places `null`-keyed objects first (null sorts before numbers in jq).
 - `add` on `[]` correctly returns `null`.
 - `map` on an array of objects with missing keys correctly produces `null` for absent fields.
 - All seven tested builtins behave robustly across numeric, object, mixed, empty, and edge-case inputs.
+
+### ACTS decision
+We selected ACTS for combinatorial testing to avoid spending time implementing and maintaining a custom generator. ACTS is a mature, documented tool that produces pairwise frames from parameter and constraint files. Encoding our model as text files made the process reproducible and allowed us to focus on modelling the input space and oracles rather than focusing on generation logic. ACTS output CSV frames that we map to fixtures and tests, which simplified automation and made reruns or model extensions straightforward.
+
+### Zero-bugs finding interpretation 
+Our test campaign did not reveal any confirmed jq defects within the features and parameter combinations we exercised. This likely reflects jq’s maturity and strong existing test coverage for the behaviors we targeted (input modes, output formatting, exit-status semantics, and core filters). However, absence of observed defects is not a proof of correctness: our study used pairwise coverage so faults may still exist in higher-order interactions, platform-specific builds, or under stress/fuzz conditions. 
+
+### Next steps
+To ensure that the jqlang will keep continuing to have a robust program the next steps that can be taken are:
+- extend combinatorial depth for high-risk parameter (3-way+) 
+- add targeted fuzzing or randomized tests for parsing and filter expressions, 
+- run cross-version/platform regressions, and 
+
+## 8. Appendix: Use of LLMs
+
+LLMs were used throughout this project to assist in generating automation scripts, tests, fixtures, and analysis.
