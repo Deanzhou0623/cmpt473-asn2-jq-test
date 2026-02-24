@@ -91,6 +91,14 @@ def test_exit_status_truthy_output_returns_zero_nonempty_stdout_empty_stderr() -
     assert err.strip() == ""
 
 
+def test_exit_status_dot_object_returns_zero_nonempty_stdout_empty_stderr() -> None:
+    rc, out, err = run_jq(["-e", ".", fixture_path("valid.json")])
+
+    assert rc == 0
+    assert out.strip() != ""
+    assert err.strip() == ""
+
+
 def test_exit_status_missing_returns_one_and_quiet_stderr() -> None:
     rc, out, err = run_jq(["-e", ".missing", fixture_path("valid.json")])
 

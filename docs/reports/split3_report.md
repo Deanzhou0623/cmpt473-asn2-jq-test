@@ -2,8 +2,8 @@
 
 ## Environment
 
-- Date: 2026-02-22 20:45:23 PST
-- OS: Darwin 24.6.0 (arm64)
+- Date: 2026-02-23 20:36:10 PST
+- OS: macOS 15.7.3 (Darwin 24.6.0, arm64)
 - Python version: 3.10.11
 - jq version: jq-1.7.1-apple
 
@@ -11,11 +11,18 @@
 
 - Test path: `tests/split3/test_split3.py`
 - ACTS model: `docs/acts/split3/split3_acts_model.md`
+- ACTS input file: `docs/acts/split3/split3_acts_input.txt`
 - Pairwise frame file: `docs/acts/split3/split3_pairwise_frames.csv`
+- ACTS-generated CSV (from macOS folder run): `docs/acts/split3/split3_pairwise_from_macosx.csv`
 - Coverage strength: 2-way (pairwise)
-- Frames executed: 11
-- Total pytest tests run: 11
-- Passed: 11
+- ACTS runtime source: `__MACOSX/ACTS3.0/acts_3.0.jar`
+- ACTS generation command: `java -Dalgo=ipog -Ddoi=2 -Doutput=csv -Dmode=scratch -Dchandler=forbiddentuples -Dcheck=on -jar __MACOSX/ACTS3.0/acts_3.0.jar docs/acts/split3/split3_acts_input.txt docs/acts/split3/split3_pairwise_from_macosx.csv`
+- ACTS configurations generated: 12
+- Frames executed: 12
+- Execution command: `python3 -m pytest -q tests/split3`
+- Execution time: 0.06s
+- Total pytest tests run: 12
+- Passed: 12
 - Failed: 0
 - Skipped: 0
 
@@ -40,6 +47,7 @@
 | F09 | `test_exit_status_null_returns_one` | Pass |
 | F10 | `test_exit_status_no_output_empty_filter_returns_four` | Pass |
 | F11 | `test_exit_status_invalid_filter_returns_three_and_compile_error` | Pass |
+| F12 | `test_exit_status_dot_object_returns_zero_nonempty_stdout_empty_stderr` | Pass |
 
 ## Bugs Found
 
@@ -52,4 +60,4 @@ Observed version-specific detail:
 ## Observations and Conclusions
 
 - Exit-code behavior aligns with jq manual for the tested classes: file/system errors `2`, compile errors `3`, `-e` false/null `1`, and `-e` no-output `4`.
-- Split 3 now has complete traceability from category/constraints -> pairwise frames -> automated execution results.
+- Split 3 now has complete traceability from category/constraints -> ACTS-generated pairwise frames -> automated execution results.

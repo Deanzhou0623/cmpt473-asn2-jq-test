@@ -1,0 +1,19 @@
+[System]
+-- specify system name
+Name: Split3_Error_Handling_ExitStatus
+
+[Parameter]
+-- general syntax is parameter_name (type) : value1, value2, ...
+input_file_state (enum) : valid, invalid_json, empty, missing, no_read_permission
+filter_kind (enum) : dot, invalid_program, field_a, field_b, field_c, field_missing, empty_filter
+exit_status_flag (enum) : off, on
+
+[Constraint]
+-- C1: invalid/missing/permission states only use dot
+input_file_state != "valid" => filter_kind = "dot"
+-- C2: invalid/missing/permission states do not use -e
+input_file_state != "valid" => exit_status_flag = "off"
+-- C3: invalid filter modeled on valid input only
+filter_kind = "invalid_program" => input_file_state = "valid"
+-- C4: -e behavior rows use valid input and -e on
+(filter_kind = "field_a" || filter_kind = "field_b" || filter_kind = "field_c" || filter_kind = "field_missing" || filter_kind = "empty_filter") => (input_file_state = "valid" && exit_status_flag = "on")

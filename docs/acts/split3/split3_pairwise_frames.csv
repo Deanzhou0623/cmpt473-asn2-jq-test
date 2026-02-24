@@ -10,3 +10,4 @@ F08,valid,field_c,on,1,nonempty,empty,test_exit_status_false_returns_one,pass
 F09,valid,field_b,on,1,nonempty,empty,test_exit_status_null_returns_one,pass
 F10,valid,empty_filter,on,4,empty,empty,test_exit_status_no_output_empty_filter_returns_four,pass
 F11,valid,invalid_program,on,3,empty,compile|syntax,test_exit_status_invalid_filter_returns_three_and_compile_error,pass
+F12,valid,dot,on,0,nonempty,empty,test_exit_status_dot_object_returns_zero_nonempty_stdout_empty_stderr,pass
