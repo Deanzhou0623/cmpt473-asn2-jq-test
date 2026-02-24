@@ -53,7 +53,7 @@ def run_jq_bytes(
     except subprocess.TimeoutExpired as exc:
         stdout = exc.stdout if isinstance(exc.stdout, bytes) else b""
         stderr = exc.stderr if isinstance(exc.stderr, bytes) else b""
-        suffix = f"\njq timed out after {timeout}s".encode("utf-8")
-        return 124, stdout, stderr + suffix
+        timeout_msg = f"jq timed out after {timeout}s".encode("utf-8")
+        return 124, stdout, (stderr + b"\n" if stderr else b"") + timeout_msg
     except FileNotFoundError:
         return 127, b"", b"jq executable not found"

@@ -60,10 +60,8 @@ This split validates:
 ### Consistency Constraints
 
 - `string_content_class != not_applicable => output_type = string`
-- `output_type != string => string_content_class = not_applicable`
 - `output_type = string => string_content_class != not_applicable`
 - `output_mode in {raw, join, raw0} => output_type = string`
-- `output_mode = raw0 => output_type = string`
 
 ## Oracle Model
 

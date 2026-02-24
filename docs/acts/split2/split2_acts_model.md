@@ -16,10 +16,8 @@ Use this model in ACTS with strength = 2 (pairwise).
 Enter these constraints in ACTS (adjust syntax if your ACTS build requires it):
 
 1. `(string_content_class != not_applicable) => (output_type = string)`
-2. `(output_type != string) => (string_content_class = not_applicable)`
-3. `(output_type = string) => (string_content_class != not_applicable)`
-4. `(output_mode = raw OR output_mode = join OR output_mode = raw0) => (output_type = string)`
-5. `(output_mode = raw0) => (output_type = string)`
+2. `(output_type = string) => (string_content_class != not_applicable)`
+3. `(output_mode = raw OR output_mode = join OR output_mode = raw0) => (output_type = string)`
 
 ## Mapping to Concrete jq Invocations
 
