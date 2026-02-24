@@ -41,13 +41,12 @@ def test_group_by_objects():
     rc, stdout, stderr = run_jq(["group_by(.id)", get_fixture_path("objects.json")])
     assert rc == 0
     result = json.loads(stdout)
-    assert len(result) == 3
-    # Check if grouped correctly (order of groups might depend on jq version, usually sorted by key)
-    # .id=1 group, .id=2 group, .id=null group (for "other":3)
-    # In jq, null comes before numbers? Let's check.
-    # Actually, let's just check contents.
-    flat_result = [item for sublist in result for item in sublist]
-    assert len(flat_result) == 4
+    expected = [
+        [{"other": 3}],
+        [{"id": 1}, {"id": 1}],
+        [{"id": 2}],
+    ]
+    assert result == expected
 
 def test_unique_mixed():
     """F05: unique on mixed_array [1, "a", 1, null]"""
