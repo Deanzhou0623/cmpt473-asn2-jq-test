@@ -38,14 +38,13 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def non_comment_lines(path: Path) -> list[str]:
-    lines: list[str] = []
+def non_comment_lines(path: Path) -> "Iterator[str]":
     with path.open("r", encoding="utf-8", newline="") as f:
         for line in f:
-            if not line.strip() or line.startswith("#"):
+            stripped_line = line.strip()
+            if not stripped_line or stripped_line.startswith("#"):
                 continue
-            lines.append(line)
-    return lines
+            yield line
 
 
 def convert_rows(source_rows: list[dict[str, str]]) -> list[dict[str, str]]:
